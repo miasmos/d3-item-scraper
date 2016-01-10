@@ -61,18 +61,45 @@ class d3ItemScraper {
 
 	_parseItemList(data, cb) {
 		var $ = cheerio.load(data)
-		var names = []
+		var names = {}
 
 		$('table tbody tr .subheader-3 a').each(item)
 
 		if (!names.length) {
 			//dyes
-			$('.page-body .data-cell a').each(item)
+			$('.page-body .data-cell a').each(dye)
 		}
 
 		function item(index, element) {
-			var split = $(this).attr('href').split('/')
-			names.push(split[split.length-1])
+			var name = $(this).attr('href').split('/')
+			name = name[name.length-1]
+			var rarity = getRarity(this)
+			
+			if (!names[rarity]) names[rarity] = []
+			names[rarity].push(name)
+		}
+
+		function dye(index, element) {
+			var name = $(this).attr('href').split('/')
+			name = name[name.length-1]
+			var rarity = 'common'
+
+			if (!names[rarity]) names[rarity] = []
+			names[rarity].push(name)
+		}
+
+		function getRarity(node) {
+			if ($(node).hasClass('d3-color-blue')) {
+				return 'magic'
+			} else if ($(node).hasClass('d3-color-yellow')) {
+				return 'rare'
+			} else if ($(node).hasClass('d3-color-green')) {
+				return 'set'
+			} else if ($(node).hasClass('d3-color-orange')) {
+				return 'legendary'
+			} else {
+				return 'common'
+			}
 		}
 
 		cb(null, names)
