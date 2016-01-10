@@ -50,10 +50,10 @@ class d3ItemScraper {
 				var pretty = JSON.stringify(results, null, 4)
 				fs.writeFile(filename, pretty, function(err) {
 					if (!err && verbose) console.log(`wrote to file ${filename}`)
-					cb(err, results)
+					if (typeof cb === 'function') cb(err, results)
 				})
 			} else {
-				cb(err, results)
+				if (typeof cb === 'function') cb(err, results)
 			}
 			if (verbose) console.log('done')
 		})
