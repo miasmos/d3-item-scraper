@@ -1,5 +1,5 @@
 # d3-item-scraper
-Scrapes the Diablo 3 website for all item names.  
+Scrapes the Diablo 3 website for all item names. Gives a complete list of valid items when querying the [diablo api](https://dev.battle.net/io-docs)
   
 # Getting Started  
 ```
