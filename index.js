@@ -65,11 +65,11 @@ class d3ItemScraper {
 		var names = {}
 
 		switch(type) {
-			case "gem":
-				$('.page-body .data-cell a').each(gem)
-				break;
 			case "dye":
-				$('.page-body .data-cell a').each(dye)
+			case "potion":
+			case "gem":
+			case "crafting-material":
+				$('.page-body .data-cell a').each(miscItem)
 				break;
 			default:
 				$('table tbody tr .subheader-3 a').each(item)
@@ -85,16 +85,7 @@ class d3ItemScraper {
 			names[rarity].push(name)
 		}
 
-		function dye(index, element) {
-			var name = $(this).attr('href').split('/')
-			name = name[name.length-1]
-			var rarity = 'common'
-
-			if (!names[rarity]) names[rarity] = []
-			names[rarity].push(name)
-		}
-
-		function gem(index, element) {
+		function miscItem(index, element) {
 			var name = $(this).attr('href').split('/')
 			name = name[name.length-1]
 			var rarity = getRarity($(this).find('.d3-icon'))
