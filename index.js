@@ -65,23 +65,28 @@ class d3ItemScraper {
 		var names = {}
 
 		switch(type) {
+			case "gem":
+				//gems are not in the api
+				$('.page-body .data-cell').each(function(i,e) {
+					item(this,i,e,true,false)
+				})
+				break;
 			case "dye":
 			case "potion":
-			case "gem":
 			case "crafting-material":
 				$('.page-body .data-cell').each(function(i,e) {
-					item(this,i,e,1)
+					item(this,i,e,true)
 				})
 				break;
 			default:
 				$('table tbody .item-details').each(function(i,e) {
-					item(this,i,e,0)
+					item(this,i,e,false)
 				})
 				break;
 		}
 
-		function item(self, index, element, misc) {
-			var name, rarity, crafted
+		function item(self, index, element, misc, inAPI) {
+			var name, rarity, inAPI
 
 			if (!misc) {
 				name = $(element).find('.subheader-3 a').attr('href').split('/')
@@ -92,10 +97,11 @@ class d3ItemScraper {
 				name = name[name.length-1]
 				rarity = getRarity($(self).find('.d3-icon'))
 			}
-			crafted = $(self).find('.item-crafting').length ? true : false
+			console.log($(self).find('.item-crafting').length)
+			if (typeof inAPI === 'undefined') inAPI = $(self).find('.item-crafting').length ? false : true
 
 			if (!names[rarity]) names[rarity] = []
-			names[rarity].push({name:name, crafted: crafted})
+			names[rarity].push({name:name, inAPI: inAPI})
 		}
 
 		function getRarity(node) {
