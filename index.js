@@ -66,7 +66,9 @@ class d3ItemScraper {
 
 		switch(type) {
 			case "gem":
-				//gems are not in the api
+			case "jeweler-design":
+			case "blacksmith-plan":
+				//items that are not in the api
 				$('.page-body .data-cell').each(function(i,e) {
 					item(this,i,e,true,false)
 				})
