@@ -28,7 +28,7 @@ class d3ItemScraper {
 				async.each(links, function(link, cb2) {
 					request('http://us.battle.net'+link, function(error, response, body) {
 						if (!error && response.statusCode == 200) {
-							self._parseItemList(body, function(err, res) {
+							self._parseItemList(link, body, function(err, res) {
 								if (verbose) console.log(`done parsing ${link}`)
 								var type = link.split('/')[link.split('/').length-2]
 								if (!err) {
@@ -59,15 +59,21 @@ class d3ItemScraper {
 		})
 	}
 
-	_parseItemList(data, cb) {
+	_parseItemList(url, data, cb) {
 		var $ = cheerio.load(data)
+		var type = url.split('/')[url.split('/').length-2]
 		var names = {}
 
-		$('table tbody tr .subheader-3 a').each(item)
-
-		if (!names.length) {
-			//dyes
-			$('.page-body .data-cell a').each(dye)
+		switch(type) {
+			case "gem":
+				$('.page-body .data-cell a').each(gem)
+				break;
+			case "dye":
+				$('.page-body .data-cell a').each(dye)
+				break;
+			default:
+				$('table tbody tr .subheader-3 a').each(item)
+				break;
 		}
 
 		function item(index, element) {
@@ -88,14 +94,23 @@ class d3ItemScraper {
 			names[rarity].push(name)
 		}
 
+		function gem(index, element) {
+			var name = $(this).attr('href').split('/')
+			name = name[name.length-1]
+			var rarity = getRarity($(this).find('.d3-icon'))
+
+			if (!names[rarity]) names[rarity] = []
+			names[rarity].push(name)
+		}
+
 		function getRarity(node) {
-			if ($(node).hasClass('d3-color-blue')) {
+			if ($(node).hasClass('d3-color-blue') || $(node).hasClass('d3-icon-item-blue')) {
 				return 'magic'
-			} else if ($(node).hasClass('d3-color-yellow')) {
+			} else if ($(node).hasClass('d3-color-yellow') || $(node).hasClass('d3-icon-item-yellow')) {
 				return 'rare'
-			} else if ($(node).hasClass('d3-color-green')) {
+			} else if ($(node).hasClass('d3-color-green') || $(node).hasClass('d3-icon-item-green')) {
 				return 'set'
-			} else if ($(node).hasClass('d3-color-orange')) {
+			} else if ($(node).hasClass('d3-color-orange') || $(node).hasClass('d3-icon-item-orange')) {
 				return 'legendary'
 			} else {
 				return 'common'
