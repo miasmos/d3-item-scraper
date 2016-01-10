@@ -69,27 +69,22 @@ class d3ItemScraper {
 			case "potion":
 			case "gem":
 			case "crafting-material":
-				$('.page-body .data-cell a').each(miscItem)
+				$('.page-body .data-cell a').each(function(i,e) {
+					item(this,i,e,1)
+				})
 				break;
 			default:
-				$('table tbody tr .subheader-3 a').each(item)
+				$('table tbody tr .subheader-3 a').each(function(i,e) {
+					item(this,i,e,0)
+				})
 				break;
 		}
 
-		function item(index, element) {
-			var name = $(this).attr('href').split('/')
+		function item(self, index, element, misc) {
+			var name = $(self).attr('href').split('/')
 			name = name[name.length-1]
-			var rarity = getRarity(this)
+			var rarity = misc ? getRarity($(self).find('.d3-icon')) : getRarity(self)
 			
-			if (!names[rarity]) names[rarity] = []
-			names[rarity].push(name)
-		}
-
-		function miscItem(index, element) {
-			var name = $(this).attr('href').split('/')
-			name = name[name.length-1]
-			var rarity = getRarity($(this).find('.d3-icon'))
-
 			if (!names[rarity]) names[rarity] = []
 			names[rarity].push(name)
 		}
