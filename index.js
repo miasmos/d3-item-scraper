@@ -98,7 +98,7 @@ class d3ItemScraper {
 				rarity = getRarity($(self).find('.d3-icon'))
 			}
 
-			if (typeof inAPI === 'undefined') inAPI = $(self).find('.item-crafting').length ? false : true
+			if (typeof inAPI === 'undefined') inAPI = $(self).find('.d3-item-properties .item-crafting').length ? false : true
 
 			if (!names[rarity]) names[rarity] = []
 			names[rarity].push({name:name, inAPI: inAPI})
